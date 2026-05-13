@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { LandingPage } from '@/pages/LandingPage'
 import { Dashboard } from '@/pages/Dashboard'
+import { Sessions } from '@/pages/Sessions'
+import { Stats } from '@/pages/Stats'
+import { About } from '@/pages/About'
 import { Session } from '@/types'
 
 function App() {
@@ -34,6 +37,11 @@ function App() {
     return { streak: 0, lastActiveDate: null };
   });
 
+  const [xp, setXp] = useState<number>(() => {
+    const saved = localStorage.getItem('deepwork_xp');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+
   useEffect(() => {
     localStorage.setItem('deepwork_sessions', JSON.stringify(sessions));
   }, [sessions]);
@@ -45,6 +53,10 @@ function App() {
   useEffect(() => {
     localStorage.setItem('deepwork_streak', JSON.stringify(streakData));
   }, [streakData]);
+
+  useEffect(() => {
+    localStorage.setItem('deepwork_xp', xp.toString());
+  }, [xp]);
 
   const handleAddSession = (session: Omit<Session, 'id'>) => {
     const newSession = { ...session, id: crypto.randomUUID() };
@@ -69,6 +81,30 @@ function App() {
       }
       return { streak: 1, lastActiveDate: todayStr };
     });
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const todayStr = today.toDateString();
+    
+    let currentStreak = streakData.streak;
+    if (streakData.lastActiveDate !== todayStr) {
+      if (streakData.lastActiveDate) {
+        const last = new Date(streakData.lastActiveDate);
+        last.setHours(0,0,0,0);
+        const diffDays = Math.floor((today.getTime() - last.getTime()) / (1000 * 3600 * 24));
+        if (diffDays === 1) currentStreak++;
+        else currentStreak = 1;
+      } else {
+        currentStreak = 1;
+      }
+    }
+
+    const minutes = session.duration / 60;
+    let earnedXp = Math.floor(minutes);
+    if (currentStreak >= 7) earnedXp += 10;
+    else if (currentStreak >= 3) earnedXp += 5;
+    
+    setXp(prev => prev + earnedXp);
   };
 
   const handleDeleteSession = (id: string) => {
@@ -96,12 +132,24 @@ function App() {
               sessions={sessions}
               subjects={subjects}
               streak={streakData.streak}
+              xp={xp}
               onAddSession={handleAddSession}
-              onDeleteSession={handleDeleteSession}
               onAddSubject={handleAddSubject}
               onDeleteSubject={handleDeleteSubject}
             />
           } 
+        />
+        <Route
+          path="/sessions"
+          element={<Sessions sessions={sessions} subjects={subjects} onDeleteSession={handleDeleteSession} />}
+        />
+        <Route
+          path="/stats"
+          element={<Stats sessions={sessions} />}
+        />
+        <Route
+          path="/about"
+          element={<About />}
         />
       </Routes>
     </BrowserRouter>

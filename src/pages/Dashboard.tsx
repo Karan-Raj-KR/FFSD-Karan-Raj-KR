@@ -1,21 +1,19 @@
 import { useState, useEffect } from 'react';
 import { Session } from '@/types';
 import { VideoBackground } from '@/components/VideoBackground';
-import { Link } from 'react-router-dom';
-import { ArrowLeftIcon } from 'lucide-react';
-
+import { LevelBar } from '../components/dashboard/LevelBar';
+import { Badges } from '../components/dashboard/Badges';
+import { AmbientPlayer } from '../components/dashboard/AmbientPlayer';
+import { Navbar } from '../components/Navbar';
 import { PomodoroTimer } from '../components/dashboard/PomodoroTimer';
 import { StatCards } from '../components/dashboard/StatCards';
-import { SessionLog } from '../components/dashboard/SessionLog';
-import { WeeklyBarChart } from '../components/dashboard/WeeklyBarChart';
-import { SubjectDonutChart } from '../components/dashboard/SubjectDonutChart';
 
 interface DashboardProps {
   sessions: Session[];
   subjects: string[];
   streak: number;
+  xp: number;
   onAddSession: (session: Omit<Session, 'id'>) => void;
-  onDeleteSession: (id: string) => void;
   onAddSubject: (subject: string) => void;
   onDeleteSubject: (subject: string) => void;
 }
@@ -24,12 +22,13 @@ export function Dashboard({
   sessions, 
   subjects, 
   streak,
+  xp,
   onAddSession, 
-  onDeleteSession,
   onAddSubject,
   onDeleteSubject
 }: DashboardProps) {
   const [activeSubject, setActiveSubject] = useState(subjects[0] || 'Deep Work');
+  const [isFocusRunning, setIsFocusRunning] = useState(false);
 
   // Make sure active subject is valid if subjects are deleted
   useEffect(() => {
@@ -42,25 +41,24 @@ export function Dashboard({
     <main className="relative min-h-screen w-full overflow-x-hidden bg-background">
       <VideoBackground />
       
-      <div className="relative z-10 flex flex-col min-h-screen p-6 md:p-12 max-w-7xl mx-auto w-full">
-        <header className="flex items-center justify-between mb-8">
+      <Navbar />
+      
+      <div className="relative z-10 flex flex-col p-6 md:p-12 max-w-7xl mx-auto w-full pt-12">
+        <header className="mb-8">
           <div>
-            <Link 
-              to="/" 
-              className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground mb-4 transition-colors"
-            >
-              <ArrowLeftIcon className="w-4 h-4" /> ← Home
-            </Link>
             <h1 className="text-4xl md:text-5xl text-foreground font-normal tracking-tight" style={{ fontFamily: "'Instrument Serif', serif" }}>
               Dashboard
             </h1>
+            <p className="text-muted-foreground mt-2">Welcome back. Let's get focused.</p>
           </div>
         </header>
 
         <div className="space-y-8 pb-20">
           <StatCards sessions={sessions} streak={streak} />
+          
+          <LevelBar xp={xp} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div className="lg:col-span-1 space-y-8">
               <PomodoroTimer 
                 activeSubject={activeSubject}
@@ -71,20 +69,20 @@ export function Dashboard({
                 onAddSubject={onAddSubject}
                 onDeleteSubject={onDeleteSubject}
                 onSelectSubject={setActiveSubject}
+                onTimerStateChange={(running, mode) => {
+                  setIsFocusRunning(running && mode === 'focus');
+                }}
               />
             </div>
 
-            <div className="lg:col-span-2 space-y-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <WeeklyBarChart sessions={sessions} />
-                <SubjectDonutChart sessions={sessions} />
-              </div>
-
-              <SessionLog sessions={sessions} onDelete={onDeleteSession} />
+            <div className="lg:col-span-1 space-y-8 mt-[-32px]">
+              <Badges sessions={sessions} streak={streak} xp={xp} />
             </div>
           </div>
         </div>
       </div>
+      
+      <AmbientPlayer xp={xp} isFocusRunning={isFocusRunning} />
     </main>
   );
 }

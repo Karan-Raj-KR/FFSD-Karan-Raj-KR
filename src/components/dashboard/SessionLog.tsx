@@ -53,9 +53,14 @@ export function SessionLog({ sessions, onDelete }: SessionLogProps) {
             </div>
             
             <div className="flex items-center gap-4">
-              <span className="text-sm font-medium text-foreground">
-                {formatDuration(s.duration)}
-              </span>
+              <div className="flex flex-col items-end">
+                <span className="text-sm font-medium text-foreground">
+                  {formatDuration(s.duration)}
+                </span>
+                <span className="text-xs text-yellow-500">
+                  +{Math.floor(s.duration / 60)} XP
+                </span>
+              </div>
               <button 
                 onClick={() => onDelete(s.id)}
                 className="text-muted-foreground hover:text-red-400 transition-colors p-2 opacity-0 group-hover:opacity-100"
