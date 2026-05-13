@@ -1,11 +1,8 @@
-export type Category = 'Food' | 'Transport' | 'Bills' | 'Entertainment' | 'Shopping' | 'Other';
-export type TransactionType = 'income' | 'expense';
-
-export interface Transaction {
+export interface Session {
   id: string;
-  description: string;
-  amount: number;
-  type: TransactionType;
-  category: Category;
-  date: string;
+  subject: string;
+  duration: number; // in seconds
+  timestamp: string; // ISO date string
 }
+
+export type TimerMode = 'focus' | 'shortBreak' | 'longBreak';

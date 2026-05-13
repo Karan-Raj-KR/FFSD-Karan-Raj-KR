@@ -1,3 +1,11 @@
+/**
+ * HeroSection.tsx
+ * 
+ * The main hero section of the landing page.
+ * Displays the primary value proposition and a CTA to enter the dashboard.
+ */
+import { Link } from 'react-router-dom';
+
 export function HeroSection() {
   return (
     <section className="relative z-10 flex flex-col items-center text-center px-6 pt-32 pb-40 py-[90px]">
@@ -9,22 +17,22 @@ export function HeroSection() {
           letterSpacing: '-2.46px',
         }}
       >
-        Where your money{' '}
-        <em className="not-italic text-muted-foreground">makes sense.</em>
+        Where focus{' '}
+        <em className="not-italic text-muted-foreground">becomes a habit.</em>
       </h1>
 
       {/* Subtext */}
       <p className="animate-fade-rise-delay text-muted-foreground text-base sm:text-lg max-w-2xl mt-8 leading-relaxed">
-        Track every rupee. Understand your habits. Build a better financial life — one transaction at a time.
+        Built for students who take their time seriously. Track sessions, kill distractions, and watch your consistency compound.
       </p>
 
       {/* Hero CTA */}
-      <a
-        href="/dashboard"
+      <Link
+        to="/dashboard"
         className="animate-fade-rise-delay-2 liquid-glass inline-block rounded-full px-14 py-5 text-base text-foreground mt-12 transition-transform duration-200 hover:scale-[1.03] cursor-pointer"
       >
-        Open Dashboard
-      </a>
+        Start Focusing
+      </Link>
     </section>
   )
 }

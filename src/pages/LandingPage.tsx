@@ -1,10 +1,16 @@
+/**
+ * LandingPage.tsx
+ * 
+ * The main landing page view. 
+ * Combines the VideoBackground, Navbar, and HeroSection.
+ */
 import { VideoBackground } from '@/components/VideoBackground'
 import { Navbar } from '@/components/Navbar'
 import { HeroSection } from '@/components/HeroSection'
 
 export function LandingPage() {
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-background">
+    <main className="relative min-h-screen w-full overflow-x-hidden bg-background">
       {/* Fullscreen Video Background */}
       <VideoBackground />
 
