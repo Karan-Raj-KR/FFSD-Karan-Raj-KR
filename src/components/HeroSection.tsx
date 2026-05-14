@@ -2,7 +2,7 @@
  * HeroSection.tsx
  * 
  * The main hero section of the landing page.
- * Displays the primary value proposition and a CTA to enter the dashboard.
+ * Displays the primary value proposition and a CTA to ENTER the dashboard.
  */
 import { Link } from 'react-router-dom';
 
